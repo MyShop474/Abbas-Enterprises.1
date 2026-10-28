@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abbas Enterprises — Metro Electric Bikes | Khwazakhela, Swat</title>
+<meta name="description" content="Authorized Dealer of Metro Electric Bikes in Khwazakhela, Swat. Ride Smart, Ride Electric.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0d0e;
+    --asphalt:#18181b;
+    --asphalt-2:#212124;
+    --red:#e31e24;
+    --red-deep:#8f0f14;
+    --paper:#f4f2ec;
+    --paper-dim:#c9c7c0;
+    --grey:#8a8a90;
+    --charge:#c8ff4d;
+    --line: rgba(244,242,236,0.08);
+    --ease: cubic-bezier(.16,.84,.24,1);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'Manrope', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3, .display{
+    font-family:'Rajdhani', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    font-weight:700;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  img{ max-width:100%; display:block; }
+
+  section{ position:relative; }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 clamp(20px, 5vw, 64px);
+  }
+
+  ::selection{ background:var(--red); color:var(--paper); }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--charge);
+    outline-offset:3px;
+  }
+
+  /* ---------- NOISE / ROAD TEXTURE ---------- */
+  .grain{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px clamp(20px,5vw,64px);
+    background:linear-gradient(to bottom, rgba(13,13,14,0.92), rgba(13,13,14,0));
+    backdrop-filter:blur(2px);
+  }
+  .brand{
+    display:flex; align-items:center; gap:12px;
+    font-family:'Rajdhani',sans-serif; font-weight:700; letter-spacing:0.03em;
+    font-size:15px;
+  }
+  .brand img{ width:38px; height:38px; object-fit:contain; }
+  .brand .sub{ display:block; font-family:'Manrope',sans-serif; font-weight:500; text-transform:none; letter-spacing:0; font-size:11px; color:var(--grey); }
+
+  .call-pill{
+    display:flex; align-items:center; gap:8px;
+    border:1px solid var(--line);
+    padding:9px 18px;
+    border-radius:999px;
+    font-size:13px; font-weight:600;
+    letter-spacing:0.03em;
+    transition:border-color .3s var(--ease), background .3s var(--ease);
+  }
+  .call-pill:hover{ border-color:var(--red); background:rgba(227,30,36,0.08); }
+  .call-pill svg{ width:15px; height:15px; stroke:var(--red); }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:120px; padding-bottom:80px;
+    position:relative;
+    isolation:isolate;
+  }
+
+  .hero::before{
+    /* diagonal speed lines */
+    content:''; position:absolute; inset:0; z-index:-2;
+    background:
+      repeating-linear-gradient(115deg, transparent 0 68px, rgba(244,242,236,0.028) 68px 69px, transparent 69px 140px);
+  }
+  .hero::after{
+    content:''; position:absolute; inset:0; z-index:-1;
+    background: radial-gradient(ellipse 60% 50% at 78% 30%, rgba(227,30,36,0.16), transparent 70%);
+  }
+
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    align-items:center;
+    gap:40px;
+  }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:12.5px; font-weight:700; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--charge);
+    margin-bottom:22px;
+    animation: floatY 6s ease-in-out infinite;
+  }
+  .eyebrow .dot{
+    width:7px; height:7px; border-radius:50%; background:var(--charge);
+    box-shadow:0 0 10px 2px var(--charge);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  .hero h1{
+    font-size:clamp(48px, 8vw, 96px);
+    line-height:0.95;
+    color:var(--paper);
+    animation: floatY 7s ease-in-out infinite;
+  }
+  .hero h1 .accent{
+    color:var(--red);
+    -webkit-text-stroke: 1px rgba(227,30,36,0.5);
+  }
+  .hero h1 span{ display:block; }
+  .hero h1 span:nth-child(2){ animation-delay:.15s; }
+
+  .hero p.lede{
+    margin-top:26px;
+    max-width:460px;
+    font-size:17px;
+    line-height:1.6;
+    color:var(--paper-dim);
+    animation: floatY 8s ease-in-out infinite;
+    animation-delay:.3s;
+  }
+
+  .hero-ctas{
+    margin-top:38px;
+    display:flex; flex-wrap:wrap; gap:16px;
+    animation: floatY 8s ease-in-out infinite;
+    animation-delay:.45s;
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:16px 30px;
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700; font-size:15px; letter-spacing:0.05em;
+    text-transform:uppercase;
+    border-radius:4px;
+    transition:transform .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease);
+  }
+  .btn-primary{
+    background:var(--red); color:var(--paper);
+    box-shadow:0 8px 30px -8px rgba(227,30,36,0.6);
+  }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 34px -8px rgba(227,30,36,0.75); }
+  .btn-ghost{
+    border:1px solid rgba(244,242,236,0.22);
+    color:var(--paper);
+  }
+  .btn-ghost:hover{ border-color:var(--paper); transform:translateY(-3px); }
+  .btn svg{ width:16px; height:16px; }
+
+  /* hero logo stage */
+  .hero-stage{
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    height:clamp(280px, 36vw, 460px);
+  }
+  .charge-ring{
+    position:absolute; width:82%; aspect-ratio:1;
+    border-radius:50%;
+    border:1px dashed rgba(227,30,36,0.35);
+    animation: spin 34s linear infinite;
+  }
+  .charge-ring.two{
+    width:100%;
+    border-color:rgba(244,242,236,0.1);
+    animation-duration:50s;
+    animation-direction:reverse;
+  }
+  .hero-stage .glow{
+    position:absolute; width:70%; aspect-ratio:1; border-radius:50%;
+    background:radial-gradient(circle, rgba(227,30,36,0.45), transparent 68%);
+    filter:blur(18px);
+    animation: pulse 3.2s ease-in-out infinite;
+  }
+  .hero-stage img{
+    position:relative; z-index:2;
+    width:62%;
+    filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+    animation: floatLogo 6s ease-in-out infinite;
+  }
+
+  @keyframes floatY{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-10px); }
+  }
+  @keyframes floatLogo{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-16px) rotate(1.2deg); }
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:.55; transform:scale(1); }
+    50%{ opacity:1; transform:scale(1.06); }
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .scroll-cue{
+    position:absolute; left:50%; bottom:28px; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    font-size:10.5px; letter-spacing:0.22em; text-transform:uppercase; color:var(--grey);
+  }
+  .scroll-cue .line{ width:1px; height:34px; background:linear-gradient(var(--red), transparent); animation:scrollLine 2s ease-in-out infinite; }
+  @keyframes scrollLine{ 0%{ transform:scaleY(0); transform-origin:top; } 50%{ transform:scaleY(1); transform-origin:top; } 51%{ transform-origin:bottom; } 100%{ transform:scaleY(0); transform-origin:bottom; } }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee{
+    background:var(--red);
+    color:var(--ink);
+    padding:16px 0;
+    overflow:hidden;
+    white-space:nowrap;
+    border-top:1px solid rgba(0,0,0,0.15);
+    border-bottom:1px solid rgba(0,0,0,0.15);
+  }
+  .marquee-track{
+    display:inline-flex;
+    animation: marquee 26s linear infinite;
+  }
+  .marquee-track span{
+    font-family:'Rajdhani',sans-serif;
+    font-weight:700; font-size:15px; letter-spacing:0.14em; text-transform:uppercase;
+    padding:0 28px;
+    display:inline-flex; align-items:center; gap:28px;
+  }
+  .marquee-track span::after{ content:'⚡'; font-size:13px; }
+  @keyframes marquee{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section-pad{ padding:120px 0; }
+  .kicker{
+    display:flex; align-items:center; gap:14px;
+    font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase;
+    color:var(--red); margin-bottom:18px;
+  }
+  .kicker::before{ content:''; width:34px; height:2px; background:var(--red); }
+  .section-title{
+    font-size:clamp(30px, 4vw, 46px);
+    max-width:640px;
+    margin-bottom:20px;
+  }
+  .section-sub{
+    color:var(--paper-dim); max-width:520px; font-size:16px; line-height:1.7;
+  }
+
+  /* ---------- BRANCHES ---------- */
+  .branches{ background:var(--asphalt); }
+  .branch-grid{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .branch-card{
+    background:var(--ink);
+    padding:36px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    position:relative;
+    overflow:hidden;
+    transition:background .4s var(--ease), transform .4s var(--ease);
+  }
+  .branch-card:hover{ background:var(--asphalt-2); transform:translateY(-4px); }
+  .branch-card::before{
+    content:''; position:absolute; top:0; left:0; height:2px; width:0;
+    background:var(--charge); transition:width .5s var(--ease);
+  }
+  .branch-card:hover::before{ width:100%; }
+  .branch-photo{
+    width:100%; aspect-ratio:16/10; border-radius:6px;
+    background:
+      repeating-linear-gradient(135deg, rgba(244,242,236,0.05) 0 10px, transparent 10px 20px),
+      linear-gradient(160deg, var(--asphalt-2), var(--ink));
+    border:1px dashed rgba(244,242,236,0.15);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--grey); overflow:hidden;
+  }
+  .branch-photo svg{ width:34px; height:34px; stroke:var(--grey); opacity:.6; }
+  .branch-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .branch-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--charge);
+  }
+  .branch-tag::before{ content:''; width:6px; height:6px; border-radius:50%; background:var(--charge); box-shadow:0 0 8px 1px var(--charge); }
+  .branch-card h3{
+    font-size:21px; line-height:1.15; color:var(--paper);
+  }
+  .branch-card h3 .sub{
+    display:block; font-family:'Manrope',sans-serif; font-weight:600;
+    text-transform:none; letter-spacing:0; font-size:12.5px; color:var(--grey);
+    margin-top:4px;
+  }
+  .branch-addr{ font-size:14px; color:var(--paper-dim); line-height:1.6; }
+  .branch-phones{ display:flex; flex-direction:column; gap:4px; }
+  .branch-phones a{
+    font-size:14.5px; font-weight:600; display:inline-flex; align-items:center; gap:8px;
+  }
+  .branch-phones a svg{ width:14px; height:14px; stroke:var(--red); flex:none; }
+  .branch-phones a:hover{ color:var(--red); }
+  .branch-sells{ font-size:12.5px; color:var(--paper-dim); line-height:1.6; }
+  .branch-sells strong{ color:var(--paper); font-weight:600; }
+  .battery-tags{
+    display:flex; flex-wrap:wrap; gap:6px; margin-top:2px;
+  }
+  .battery-tags span{
+    font-size:10.5px; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    padding:4px 9px; border-radius:999px;
+    border:1px solid rgba(244,242,236,0.16); color:var(--paper-dim);
+  }
+  @media (max-width:980px){
+    .branch-grid{ grid-template-columns:repeat(2, 1fr); }
+  }
+  @media (max-width:560px){
+    .branch-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- FEATURES ---------- */
+  .features{ background:var(--asphalt); }
+  .feature-grid{
+    margin-top:64px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .feature{
+    background:var(--asphalt);
+    padding:44px 34px;
+    position:relative;
+    overflow:hidden;
+    transition:background .4s var(--ease);
+  }
+  .feature:hover{ background:var(--asphalt-2); }
+  .feature::before{
+    content:''; position:absolute; top:0; left:0; height:2px; width:0;
+    background:var(--red); transition:width .5s var(--ease);
+  }
+  .feature:hover::before{ width:100%; }
+  .feature .num{
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13px;
+    color:var(--red); letter-spacing:0.1em; margin-bottom:22px; display:block;
+  }
+  .feature h3{ font-size:22px; margin-bottom:12px; }
+  .feature p{ color:var(--paper-dim); font-size:14.5px; line-height:1.7; }
+  .feature svg{ width:30px; height:30px; stroke:var(--red); margin-bottom:20px; }
+
+  /* ---------- BIKE GALLERY ---------- */
+  .gallery{ padding:130px 0; }
+  .gallery-head{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    flex-wrap:wrap; gap:24px; margin-bottom:60px;
+  }
+  .bike-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:28px;
+  }
+  .bike-card{
+    position:relative;
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--asphalt);
+    border:1px solid var(--line);
+    transition:transform .5s var(--ease), border-color .5s var(--ease);
+  }
+  .bike-card:hover{ transform:translateY(-8px); border-color:rgba(227,30,36,0.4); }
+  .bike-frame{
+    position:relative;
+    aspect-ratio:4/5;
+    overflow:hidden;
+  }
+  .bike-frame img{
+    width:100%; height:100%; object-fit:cover;
+    transition:transform .8s var(--ease);
+  }
+  .bike-card:hover .bike-frame img{ transform:scale(1.06); }
+  .bike-frame::after{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(13,13,14,0.92) 0%, rgba(13,13,14,0.08) 45%, transparent 65%);
+  }
+  .bike-tag{
+    position:absolute; top:16px; left:16px; z-index:2;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:0.14em; text-transform:uppercase;
+    padding:6px 12px; border-radius:999px;
+    background:rgba(13,13,14,0.55);
+    border:1px solid rgba(244,242,236,0.2);
+    backdrop-filter:blur(4px);
+  }
+  .bike-tag.hot{ background:var(--red); border-color:var(--red); color:var(--paper); }
+  .bike-info{
+    position:absolute; left:0; right:0; bottom:0; z-index:2;
+    padding:24px;
+  }
+  .bike-info .model{
+    font-size:22px; margin-bottom:4px;
+  }
+  .bike-info .desc{
+    font-size:13.5px; color:var(--paper-dim);
+  }
+
+  @media (max-width: 880px){
+    .bike-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- PRODUCTS ---------- */
+  .products{ background:var(--asphalt); }
+  .product-tabs{
+    display:flex; gap:12px; margin:44px 0 40px; flex-wrap:wrap;
+  }
+  .product-tab{
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:14px;
+    letter-spacing:0.08em; text-transform:uppercase;
+    padding:12px 26px; border-radius:999px;
+    border:1px solid rgba(244,242,236,0.18);
+    background:transparent; color:var(--paper-dim);
+    cursor:pointer; transition:background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), box-shadow .35s var(--ease);
+  }
+  .product-tab:hover{ border-color:var(--red); color:var(--paper); }
+  .product-tab.active{
+    background:var(--red); border-color:var(--red); color:var(--paper);
+    box-shadow:0 8px 24px -8px rgba(227,30,36,0.6);
+  }
+  .product-panel{ display:none; }
+  .product-panel.active{ display:block; animation: fadeIn .5s var(--ease); }
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+
+  .product-grid{
+    display:grid; grid-template-columns:repeat(5, 1fr); gap:18px;
+  }
+  .product-card{
+    background:var(--ink); border:1px solid var(--line); border-radius:8px;
+    padding:24px 20px; position:relative; overflow:hidden;
+    transition:transform .4s var(--ease), border-color .4s var(--ease);
+  }
+  .product-card:hover{ transform:translateY(-4px); border-color:rgba(227,30,36,0.4); }
+  .product-card::before{
+    content:''; position:absolute; top:0; left:0; width:0; height:2px;
+    background:var(--charge); transition:width .5s var(--ease);
+  }
+  .product-card:hover::before{ width:100%; }
+  .product-index{
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12px;
+    color:var(--red); letter-spacing:0.1em;
+  }
+  .product-thumb{
+    width:100%; aspect-ratio:4/3; border-radius:6px; margin-bottom:14px;
+    background:
+      repeating-linear-gradient(135deg, rgba(244,242,236,0.05) 0 10px, transparent 10px 20px),
+      linear-gradient(160deg, var(--asphalt-2), var(--ink));
+    border:1px dashed rgba(244,242,236,0.15);
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .product-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .product-thumb svg{ width:26px; height:26px; stroke:var(--grey); opacity:.6; }
+  .product-card h4{ font-size:17px; margin:10px 0 6px; line-height:1.2; color:var(--paper); }
+  .product-price{
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:15px;
+    color:var(--charge); letter-spacing:0.02em; margin-bottom:8px;
+  }
+  .product-spec{ font-size:12.5px; color:var(--paper-dim); line-height:1.6; margin-bottom:14px; min-height:52px; }
+  .product-cta{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--charge);
+  }
+  .product-cta svg{ width:12px; height:12px; stroke:var(--charge); transition:transform .3s var(--ease); }
+  .product-card:hover .product-cta svg{ transform:translateX(3px); }
+
+  @media (max-width:980px){ .product-grid{ grid-template-columns:repeat(3, 1fr); } }
+  @media (max-width:640px){ .product-grid{ grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:420px){ .product-grid{ grid-template-columns:1fr; } }
+
+  /* ---------- CHARGE / TAGLINE BAND ---------- */
+  .charge-band{
+    padding:150px 0;
+    position:relative;
+    text-align:center;
+    overflow:hidden;
+  }
+  .charge-band .bolt-line{
+    width:100%; max-width:720px; margin:0 auto 40px;
+    height:auto;
+  }
+  .charge-band .bolt-path{
+    fill:none;
+    stroke:var(--red);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation: draw 2.6s var(--ease) forwards;
+    animation-play-state:paused;
+  }
+  .charge-band.in-view .bolt-path{ animation-play-state:running; }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  .charge-band h2{
+    font-size:clamp(30px, 5vw, 56px);
+    line-height:1.15;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .charge-band h2 em{
+    font-style:normal;
+    color:var(--red);
+  }
+  .charge-band .meta{
+    margin-top:26px;
+    color:var(--grey);
+    font-size:14px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact{ background:var(--asphalt); }
+  .contact-grid{
+    margin-top:60px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:60px;
+  }
+  .info-row{
+    display:flex; gap:20px;
+    padding:26px 0;
+    border-top:1px solid var(--line);
+  }
+  .info-row:last-of-type{ border-bottom:1px solid var(--line); }
+  .info-row .ico{
+    flex:none;
+    width:42px; height:42px;
+    border-radius:50%;
+    border:1px solid rgba(227,30,36,0.4);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .info-row .ico svg{ width:18px; height:18px; stroke:var(--red); }
+  .info-row h4{
+    font-family:'Rajdhani',sans-serif; font-weight:700; text-transform:uppercase;
+    font-size:13px; letter-spacing:0.1em; color:var(--grey); margin-bottom:6px;
+  }
+  .info-row a, .info-row p{ font-size:17px; font-weight:500; }
+  .info-row a:hover{ color:var(--red); }
+
+  .contact-card{
+    background:var(--ink);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:44px;
+    position:relative;
+    overflow:hidden;
+  }
+  .contact-card::after{
+    content:''; position:absolute; right:-60px; top:-60px; width:200px; height:200px;
+    background:radial-gradient(circle, rgba(227,30,36,0.25), transparent 70%);
+  }
+  .contact-card h3{ font-size:26px; margin-bottom:14px; }
+  .contact-card p{ color:var(--paper-dim); font-size:15px; line-height:1.7; margin-bottom:30px; }
+  .contact-card .btn-primary{ width:100%; justify-content:center; }
+  .contact-card .btn-ghost{ width:100%; justify-content:center; margin-top:14px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:40px clamp(20px,5vw,64px);
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:16px;
+    border-top:1px solid var(--line);
+    font-size:13px; color:var(--grey);
+  }
+  footer .f-brand{ display:flex; align-items:center; gap:10px; }
+  footer img{ width:26px; height:26px; }
+
+  /* ---------- REVEAL ON SCROLL ---------- */
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .8s var(--ease), transform .8s var(--ease); }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 880px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-stage{ order:-1; height:280px; }
+    .feature-grid{ grid-template-columns:1fr; }
+    .contact-grid{ grid-template-columns:1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration:0.001ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:0.001ms !important;
+      scroll-behavior:auto !important;
+    }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <div class="brand">
+    <img src="images/img1.png" alt="Abbas Enterprises logo">
+    <span>ABBAS ENTERPRISES<span class="sub">Metro Electric Bikes — Authorized Dealer</span></span>
+  </div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <a class="call-pill" href="#bikes">See the Bikes</a>
+    <a class="call-pill" href="tel:+923419489222">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      0341-9489222
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow"><span class="dot"></span>Authorized Dealer · Khwazakhela, Swat</div>
+      <h1>
+        <span>Ride Smart.</span>
+        <span class="accent">Ride Electric.</span>
+      </h1>
+      <p class="lede">Abbas Enterprises brings Metro Electric Bikes to Matta Road, Khwazakhela — built for daily distances, priced for daily life, and backed by service you can walk into.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="tel:+923419489222">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Call the Showroom
+        </a>
+        <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&query=Abbas+Enterprises&query_place_id=ChIJs46g6L053DgRUxWZ-_8frG0" target="_blank" rel="noopener">Visit Us in Matta Road</a>
+      </div>
+    </div>
+    <div class="hero-stage">
+      <div class="charge-ring"></div>
+      <div class="charge-ring two"></div>
+      <div class="glow"></div>
+      <img src="images/img2.png" alt="Abbas Enterprises — Metro Electric Bikes logo">
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Abbas Enterprises</span><span>Metro Electric Bikes</span><span>Ride Smart, Ride Electric</span><span>Khwazakhela, Swat</span>
+    <span>Abbas Enterprises</span><span>Metro Electric Bikes</span><span>Ride Smart, Ride Electric</span><span>Khwazakhela, Swat</span>
+  </div>
+</div>
+
+<section class="features section-pad">
+  <div class="wrap reveal">
+    <div class="kicker">Why Metro</div>
+    <h2 class="section-title">Three reasons riders in Swat choose electric.</h2>
+    <p class="section-sub">No petrol runs, no gear changes, no noise on the way home — just a bike that's ready when you are.</p>
+  </div>
+  <div class="feature-grid">
+    <div class="feature reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <span class="num">01</span>
+      <h3>Zero Fuel Cost</h3>
+      <p>Charge at home, ride all day. No petrol pump stops, no rising fuel bills — just plug in and go.</p>
+    </div>
+    <div class="feature reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+      <span class="num">02</span>
+      <h3>Authorized Dealer</h3>
+      <p>Genuine Metro Electric Bikes with proper warranty and parts support — not a grey-market import.</p>
+    </div>
+    <div class="feature reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="num">03</span>
+      <h3>Local, In Matta Road</h3>
+      <p>Based right here in Khwazakhela — walk in for a test ride, service, or a straight answer on price.</p>
+    </div>
+  </div>
+</section>
+
+<section class="gallery" id="bikes">
+  <div class="wrap">
+    <div class="gallery-head reveal">
+      <div>
+        <div class="kicker">In the Showroom</div>
+        <h2 class="section-title">The Metro lineup, in stock now.</h2>
+      </div>
+      <p class="section-sub">Three finishes, one Matta Road showroom — come sit on all of them before you decide.</p>
+    </div>
+
+    <div class="bike-grid">
+      <div class="bike-card reveal">
+        <div class="bike-frame">
+          <img src="images/img3.jpg" alt="Metro Electric Bike in matte black, parked outdoors">
+          <span class="bike-tag">In Stock</span>
+          <div class="bike-info">
+            <h3 class="model">Metro — Black</h3>
+            <p class="desc">Rear carrier &amp; crash guard fitted, ready for daily loads.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bike-card reveal">
+        <div class="bike-frame">
+          <img src="images/img4.jpg" alt="Metro Sport Electric Bike in red, front view">
+          <span class="bike-tag hot">Sport</span>
+          <div class="bike-info">
+            <h3 class="model">Metro Sport — Red</h3>
+            <p class="desc">Sharper fascia, LED strip headlamp, built for the street.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bike-card reveal">
+        <div class="bike-frame">
+          <img src="images/img5.jpg" alt="Metro Electric Bike in silver chrome finish, showroom floor">
+          <span class="bike-tag">Showroom</span>
+          <div class="bike-info">
+            <h3 class="model">Metro — Silver</h3>
+            <p class="desc">Chrome-effect body with twin round LED headlamps.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="products section-pad" id="products">
+  <div class="wrap">
+    <div class="kicker reveal">Full Catalogue</div>
+    <h2 class="section-title reveal">Everything Abbas Enterprises sells.</h2>
+    <p class="section-sub reveal">Electric bikes, Sazgar Metro auto rickshaws, and the batteries that power them — browse by category, then call the showroom for stock and price.</p>
+
+    <div class="product-tabs reveal" role="tablist" aria-label="Product categories">
+      <button class="product-tab active" data-tab="ebikes" type="button">Electric Bikes</button>
+      <button class="product-tab" data-tab="rickshaws" type="button">Auto Rickshaws</button>
+      <button class="product-tab" data-tab="batteries" type="button">Batteries</button>
+    </div>
+
+    <div class="product-panel active" id="panel-ebikes">
+      <div class="product-grid" id="grid-ebikes"></div>
+    </div>
+
+    <div class="product-panel" id="panel-rickshaws">
+      <div class="product-grid" id="grid-rickshaws"></div>
+    </div>
+
+    <div class="product-panel" id="panel-batteries">
+      <div class="product-grid" id="grid-batteries"></div>
+    </div>
+  </div>
+</section>
+
+<section class="charge-band reveal" id="charge">
+  <svg class="bolt-line" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path class="bolt-path" d="M20 60 C120 60 120 20 220 20 C280 20 280 40 320 40 C400 40 400 100 480 100 C520 100 520 60 580 60" />
+  </svg>
+  <div class="wrap">
+    <h2>Every ride starts <em>fully charged.</em><br>Every price stays <em>honestly local.</em></h2>
+    <div class="meta">Metro Electric Bikes · Matta Road, Khwazakhela</div>
+  </div>
+</section>
+
+<section class="branches section-pad" id="branches">
+  <div class="wrap">
+    <div class="kicker reveal">Find Us</div>
+    <h2 class="section-title reveal">4 branches across Swat.</h2>
+    <p class="section-sub reveal">Same lineup, same honest pricing, wherever you ride in from.</p>
+
+    <div class="branch-grid" id="branch-grid"></div>
+  </div>
+</section>
+
+<section class="contact section-pad" id="contact">
+  <div class="wrap">
+    <div class="kicker">Visit / Call</div>
+    <h2 class="section-title reveal">Come see the bikes in person.</h2>
+
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="info-row">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div>
+            <h4>Showroom Address</h4>
+            <a href="https://www.google.com/maps/search/?api=1&query=Abbas+Enterprises&query_place_id=ChIJs46g6L053DgRUxWZ-_8frG0" target="_blank" rel="noopener">Abbas Enterprises, Matta Road, Khwazakhela, Swat, Pakistan</a>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div>
+            <h4>Phone</h4>
+            <a href="tel:+923419489222">0341-9489222</a>
+          </div>
+        </div>
+        <div class="info-row">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6 12 13 2 6"/><path d="M2 6h20v12H2z"/></svg></div>
+          <div>
+            <h4>Email</h4>
+            <a href="mailto:abbasenterprises9222@gmail.com">abbasenterprises9222@gmail.com</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-card reveal">
+        <h3>Ready for a test ride?</h3>
+        <p>Call ahead or just walk in — Abbas Enterprises on Matta Road is stocked and ready to show you the Metro Electric Bikes lineup.</p>
+        <a class="btn btn-primary" href="tel:+923419489222">Call 0341-9489222</a>
+        <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&query=Abbas+Enterprises&query_place_id=ChIJs46g6L053DgRUxWZ-_8frG0" target="_blank" rel="noopener">Get Directions</a>
+        <a class="btn btn-ghost" href="mailto:abbasenterprises9222@gmail.com">Email the Showroom</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="f-brand">
+    <img src="images/img6.png" alt="Abbas Enterprises logo">
+    <span>© 2026 Abbas Enterprises — Metro Electric Bikes</span>
+  </div>
+  <span>Matta Road, Khwazakhela, Swat, Pakistan</span>
+</footer>
+
+<script type="application/json" id="site-data-fallback">{"products": {"ebikes": [{"id": "eb-01", "name": "Metro E-Glide 60V", "spec": "60V · 28Ah lithium · ~70km range · LED display", "price": "", "image": ""}, {"id": "eb-02", "name": "Metro Volt Pro", "spec": "72V · 32Ah lithium · dual disc brakes · alloy wheels", "price": "", "image": ""}, {"id": "eb-03", "name": "Metro Commuter X", "spec": "60V · 24Ah · lightweight frame · daily-city range", "price": "", "image": ""}, {"id": "eb-04", "name": "Metro Cruiser LX", "spec": "60V · 30Ah · wide seat · chrome-effect trim", "price": "", "image": ""}, {"id": "eb-05", "name": "Metro Sprint 72V", "spec": "72V · 35Ah · fastest acceleration in the lineup", "price": "", "image": ""}, {"id": "eb-06", "name": "Metro City Rider", "spec": "60V · 26Ah · low seat height · easy for new riders", "price": "", "image": ""}, {"id": "eb-07", "name": "Metro Delivery Max", "spec": "60V · 32Ah · reinforced rear rack · heavy-load rated", "price": "", "image": ""}, {"id": "eb-08", "name": "Metro Junior 48V", "spec": "48V · 20Ah · compact frame · lower top speed", "price": "", "image": ""}, {"id": "eb-09", "name": "Metro Dual-Battery Elite", "spec": "72V · 2× 30Ah swappable · longest range option", "price": "", "image": ""}, {"id": "eb-10", "name": "Metro Classic Retro", "spec": "60V · 28Ah · round headlamp · Silver / Black finish", "price": "", "image": ""}, {"id": "eb-11", "name": "Metro Explorer 60V", "spec": "60V · 30Ah lithium · long-distance touring build", "price": "", "image": ""}, {"id": "eb-12", "name": "Metro Street Edge", "spec": "48V · 22Ah · nimble frame for tight lanes", "price": "", "image": ""}, {"id": "eb-13", "name": "Metro Highway 72V", "spec": "72V · 38Ah · highest top speed in the range", "price": "", "image": ""}, {"id": "eb-14", "name": "Metro EcoRide", "spec": "48V · 18Ah · budget-friendly, lowest running cost", "price": "", "image": ""}, {"id": "eb-15", "name": "Metro Dual Suspension", "spec": "60V · 28Ah · front & rear suspension for rough roads", "price": "", "image": ""}, {"id": "eb-16", "name": "Metro Ladies Special", "spec": "48V · 22Ah · low step-through frame", "price": "", "image": ""}, {"id": "eb-17", "name": "Metro Cargo Hauler", "spec": "60V · 30Ah · reinforced rear rack, delivery-ready", "price": "", "image": ""}, {"id": "eb-18", "name": "Metro Sport 72V", "spec": "72V · 34Ah · performance tuning, sport styling", "price": "", "image": ""}, {"id": "eb-19", "name": "Metro Foldable Compact", "spec": "48V · 20Ah · folds for easy storage/transport", "price": "", "image": ""}, {"id": "eb-20", "name": "Metro Premium Elite", "spec": "72V · 35Ah · top trim, full LED display & alloy wheels", "price": "", "image": ""}], "rickshaws": [{"id": "rk-01", "name": "Sazgar Metro Passenger", "spec": "Standard 4-seater · electric drive · daily-fare use", "price": "", "image": ""}, {"id": "rk-02", "name": "Sazgar Metro Deluxe", "spec": "Upholstered seating · extra cushioning · canopy roof", "price": "", "image": ""}, {"id": "rk-03", "name": "Sazgar Metro Family 6-Seater", "spec": "Extended body · side-facing rear bench · school-run ready", "price": "", "image": ""}, {"id": "rk-04", "name": "Sazgar Metro Cargo King", "spec": "Open-bed loader · reinforced chassis · heavy freight", "price": "", "image": ""}, {"id": "rk-05", "name": "Sazgar Metro Mini Cargo", "spec": "Compact loader · tight-street maneuvering · shop deliveries", "price": "", "image": ""}, {"id": "rk-06", "name": "Sazgar Metro Rapid", "spec": "Higher-torque motor · quicker off-the-line pickup", "price": "", "image": ""}, {"id": "rk-07", "name": "Sazgar Metro Long Body", "spec": "Extended wheelbase · smoother ride on longer routes", "price": "", "image": ""}, {"id": "rk-08", "name": "Sazgar Metro Eco", "spec": "Entry-level trim · lower running cost · fare-friendly", "price": "", "image": ""}, {"id": "rk-09", "name": "Sazgar Metro Heavy Duty", "spec": "Reinforced axle · built for continuous cargo runs", "price": "", "image": ""}, {"id": "rk-10", "name": "Sazgar Metro City Special", "spec": "Balanced trim for both fare & family use · full canopy", "price": "", "image": ""}, {"id": "rk-11", "name": "Sazgar Metro VIP", "spec": "Premium interior · extra legroom · chrome trim", "price": "", "image": ""}, {"id": "rk-12", "name": "Sazgar Metro Loader Plus", "spec": "Extended cargo bed · heavy-duty suspension", "price": "", "image": ""}, {"id": "rk-13", "name": "Sazgar Metro School Special", "spec": "6-seater · safety rails · school-run trim", "price": "", "image": ""}, {"id": "rk-14", "name": "Sazgar Metro Vendor Cart", "spec": "Custom cargo fit-out · street-vendor ready", "price": "", "image": ""}, {"id": "rk-15", "name": "Sazgar Metro Tourist", "spec": "Extra-wide canopy · sightseeing trim", "price": "", "image": ""}, {"id": "rk-16", "name": "Sazgar Metro Compact", "spec": "Shorter wheelbase · easier tight-street handling", "price": "", "image": ""}, {"id": "rk-17", "name": "Sazgar Metro Night Rider", "spec": "Extra lighting kit · reflective trim", "price": "", "image": ""}, {"id": "rk-18", "name": "Sazgar Metro Value", "spec": "Entry trim · lowest price point in range", "price": "", "image": ""}, {"id": "rk-19", "name": "Sazgar Metro Long Haul", "spec": "Reinforced chassis · built for extended routes", "price": "", "image": ""}, {"id": "rk-20", "name": "Sazgar Metro Flagship", "spec": "Top trim · full upholstery & premium finish", "price": "", "image": ""}], "batteries": [{"id": "bt-01", "name": "Osaka 60V 30Ah", "spec": "Lithium · standard fit for most Metro bike models", "price": "", "image": ""}, {"id": "bt-02", "name": "Osaka 72V 32Ah", "spec": "Lithium · higher capacity for longer daily routes", "price": "", "image": ""}, {"id": "bt-03", "name": "Osaka 48V 20Ah Lite", "spec": "Lightweight pack · fits Metro Junior & compact models", "price": "", "image": ""}, {"id": "bt-04", "name": "Alaska 60V 28Ah", "spec": "Lithium · balanced range and charge-cycle life", "price": "", "image": ""}, {"id": "bt-05", "name": "Alaska 72V 30Ah", "spec": "Lithium · higher-voltage pack for Metro Volt Pro & Sprint", "price": "", "image": ""}, {"id": "bt-06", "name": "Alaska 72V 32Ah Fast-Charge", "spec": "Lithium · shorter charge time, ideal for delivery riders", "price": "", "image": ""}, {"id": "bt-07", "name": "Sage 60V 26Ah", "spec": "Lithium · everyday commuter capacity", "price": "", "image": ""}, {"id": "bt-08", "name": "Sage 48V 20Ah", "spec": "Lithium · entry-level pack for smaller-frame bikes", "price": "", "image": ""}, {"id": "bt-09", "name": "Phoenix 60V 30Ah", "spec": "Lithium · reliable mid-range replacement pack", "price": "", "image": ""}, {"id": "bt-10", "name": "Phoenix 72V 35Ah", "spec": "Lithium · top-capacity pack, longest range in stock", "price": "", "image": ""}, {"id": "bt-11", "name": "Osaka 48V 22Ah", "spec": "Lithium · fits ladies & compact frame bikes", "price": "", "image": ""}, {"id": "bt-12", "name": "Osaka 72V 34Ah", "spec": "Lithium · high-capacity pack for Sprint & Volt Pro", "price": "", "image": ""}, {"id": "bt-13", "name": "Alaska 48V 18Ah", "spec": "Lithium · lightweight, budget-friendly pack", "price": "", "image": ""}, {"id": "bt-14", "name": "Alaska 60V 30Ah", "spec": "Lithium · balanced range for daily commuting", "price": "", "image": ""}, {"id": "bt-15", "name": "Sage 72V 32Ah", "spec": "Lithium · higher-voltage option for touring models", "price": "", "image": ""}, {"id": "bt-16", "name": "Sage 60V 28Ah", "spec": "Lithium · mid-range replacement pack", "price": "", "image": ""}, {"id": "bt-17", "name": "Phoenix 48V 20Ah", "spec": "Lithium · entry-level pack for compact bikes", "price": "", "image": ""}, {"id": "bt-18", "name": "Phoenix 60V 32Ah", "spec": "Lithium · extended range for daily use", "price": "", "image": ""}, {"id": "bt-19", "name": "Phoenix 72V 30Ah Fast-Charge", "spec": "Lithium · quick charge for delivery riders", "price": "", "image": ""}, {"id": "bt-20", "name": "Osaka 72V 35Ah Long Range", "spec": "Lithium · top-capacity pack, longest range", "price": "", "image": ""}]}, "branches": [{"id": "branch-1", "tag": "Main Branch", "name": "Abbas Enterprises", "sub": "Sazgar Metro Auto Rickshaw · Electric Bikes (SS Dealer)", "addr": "Matta Road, Khwazakhela, Swat", "phones": [{"tel": "+926467744222", "display": "0946-744222"}, {"tel": "+923479489222", "display": "0347-9489222"}], "batteries": ["Osaka", "Alaska", "Sage", "Phoenix"], "image": ""}, {"id": "branch-2", "tag": "2nd Branch", "name": "Metro Electric Bikes", "sub": "SS Dealer", "addr": "GT Road, Rahim Abad, Mingora, Swat", "phones": [{"tel": "+923478575522", "display": "0347-8575522"}], "batteries": ["Osaka", "Alaska", "Sage", "Phoenix"], "image": ""}, {"id": "branch-3", "tag": "3rd Branch", "name": "Metro Electric Bikes", "sub": "", "addr": "Near Baryam Bridge, Matta, Swat", "phones": [{"tel": "+923173705522", "display": "0317-3705522"}], "batteries": ["Osaka", "Saga", "Alaska", "Phoenix"], "image": ""}, {"id": "branch-4", "tag": "4th Branch", "name": "Metro Electric Bikes", "sub": "", "addr": "Watkai, Mingora, Swat", "phones": [{"tel": "+923709191195", "display": "0370-9191195"}], "batteries": ["Osaka", "Saga", "Alaska", "Phoenix"], "image": ""}]}</script>
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in-view'); });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  const chargeBand = document.getElementById('charge');
+  const io2 = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in-view'); });
+  }, { threshold: 0.3 });
+  io2.observe(chargeBand);
+
+  // ---------- PRODUCT TABS ----------
+  const productTabs = document.querySelectorAll('.product-tab');
+  const productPanels = document.querySelectorAll('.product-panel');
+  productTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      productTabs.forEach(t => t.classList.remove('active'));
+      productPanels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      document.querySelectorAll('#panel-' + tab.dataset.tab + ' .reveal').forEach(el => el.classList.add('in-view'));
+    });
+  });
+
+  // ---------- SITE DATA (products & branches) ----------
+  const PLACEHOLDER_BIKE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM19 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M5 15l3-7h5l3 4h3M8 8h3"/></svg>';
+  const PLACEHOLDER_BRANCH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/></svg>';
+  const PHONE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>';
+  const ARROW_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  const ENQUIRE_TEL = 'tel:+923419489222';
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderProducts(list, gridId){
+    const grid = document.getElementById(gridId);
+    if(!grid) return;
+    grid.innerHTML = list.map((p, i) => `
+      <div class="product-card reveal">
+        <div class="product-thumb">${p.image ? `<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">` : PLACEHOLDER_BIKE_SVG}</div>
+        <span class="product-index">${String(i+1).padStart(2,'0')}</span>
+        <h4>${esc(p.name)}</h4>
+        ${p.price ? `<div class="product-price">${esc(p.price)}</div>` : ''}
+        <p class="product-spec">${esc(p.spec)}</p>
+        <a class="product-cta" href="${ENQUIRE_TEL}">Enquire${ARROW_SVG}</a>
+      </div>
+    `).join('');
+  }
+
+  function renderBranches(branches){
+    const grid = document.getElementById('branch-grid');
+    if(!grid) return;
+    grid.innerHTML = branches.map(b => `
+      <div class="branch-card reveal">
+        <div class="branch-photo" aria-hidden="true">${b.image ? `<img src="${esc(b.image)}" alt="${esc(b.name)}" loading="lazy">` : PLACEHOLDER_BRANCH_SVG}</div>
+        <span class="branch-tag">${esc(b.tag)}</span>
+        <h3>${esc(b.name)}${b.sub ? `<span class="sub">${esc(b.sub)}</span>` : ''}</h3>
+        <div class="branch-addr">${esc(b.addr)}</div>
+        <div class="branch-phones">
+          ${(b.phones || []).map(p => `<a href="tel:${esc(p.tel)}">${PHONE_SVG}${esc(p.display)}</a>`).join('')}
+        </div>
+        <div class="branch-sells">
+          <strong>Batteries:</strong>
+          <div class="battery-tags">${(b.batteries || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function applyData(data){
+    if(!data) return;
+    renderProducts(data.products.ebikes || [], 'grid-ebikes');
+    renderProducts(data.products.rickshaws || [], 'grid-rickshaws');
+    renderProducts(data.products.batteries || [], 'grid-batteries');
+    renderBranches(data.branches || []);
+    // newly created .reveal nodes need to be observed + shown
+    document.querySelectorAll('.reveal:not(.in-view)').forEach(el => io.observe(el));
+    // reveal whichever product panel is currently active right away
+    document.querySelectorAll('.product-panel.active .reveal').forEach(el => el.classList.add('in-view'));
+  }
+
+  function readEmbeddedFallback(){
+    const el = document.getElementById('site-data-fallback');
+    if(!el) return null;
+    try{ return JSON.parse(el.textContent); }catch(e){ return null; }
+  }
+
+  // ---------------- Supabase (live data source) ----------------
+  const SUPABASE_URL = 'https://umsqktzggvdlglgjcxky.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_qgXHIR9yzixadPo6om38Yw_6vDNIe87';
+  let supa = null;
+  try{
+    if(SUPABASE_URL.startsWith('http') && window.supabase){
+      supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  }catch(e){ supa = null; }
+
+  function loadSiteData(){
+    if(!supa){
+      // Supabase isn't configured yet — use the copy of the data embedded
+      // in this page so the site still works while you finish setup.
+      const fallback = readEmbeddedFallback();
+      if(fallback) applyData(fallback);
+      else console.warn('Could not load site data.');
+      return;
+    }
+    supa.from('site_data').select('content').eq('id', 1).single()
+      .then(({ data, error }) => {
+        if(error || !data) throw error || new Error('no data');
+        applyData(data.content);
+      })
+      .catch(() => {
+        const fallback = readEmbeddedFallback();
+        if(fallback) applyData(fallback);
+        else console.warn('Could not load site data.');
+      });
+  }
+  loadSiteData();
+
+  // Live update: when admin hits Save, every open tab of this site updates
+  // itself automatically within a second or two, no refresh needed.
+  if(supa){
+    try{
+      supa.channel('site_data_live')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'site_data', filter: 'id=eq.1' },
+          (payload) => { if(payload.new && payload.new.content) applyData(payload.new.content); })
+        .subscribe();
+    }catch(e){ /* realtime is a nice-to-have, don't let it break the page */ }
+  }
+</script>
+
+
+</body>
+</html>
