@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Abbas Enterprises</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --ink:#0d0d0e;
+    --asphalt:#18181b;
+    --asphalt-2:#212124;
+    --panel:#1a1a1d;
+    --red:#e31e24;
+    --red-deep:#8f0f14;
+    --paper:#f4f2ec;
+    --paper-dim:#c9c7c0;
+    --grey:#8a8a90;
+    --charge:#c8ff4d;
+    --line: rgba(244,242,236,0.10);
+    --ease: cubic-bezier(.16,.84,.24,1);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    background:var(--ink); color:var(--paper); font-family:'Manrope', sans-serif;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  h1,h2,h3,h4, .rj{ font-family:'Rajdhani',sans-serif; }
+  ::placeholder{ color:var(--grey); opacity:1; }
+  a{ color:inherit; }
+
+  /* ---------- gate (setup / login) ---------- */
+  .gate{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .gate-box{
+    width:100%; max-width:380px; background:var(--panel); border:1px solid var(--line);
+    border-radius:12px; padding:36px 30px;
+  }
+  .gate-box .mark{ display:flex; align-items:center; gap:10px; margin-bottom:22px; }
+  .gate-box .mark .dot{ width:10px; height:10px; border-radius:50%; background:var(--charge); box-shadow:0 0 10px 1px var(--charge); }
+  .gate-box .mark span{ font-family:'Rajdhani',sans-serif; font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:13px; color:var(--paper-dim); }
+  .gate-box h1{ font-size:24px; font-weight:700; margin-bottom:6px; }
+  .gate-box p.sub{ color:var(--paper-dim); font-size:13.5px; line-height:1.6; margin-bottom:22px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12px; font-weight:600; color:var(--paper-dim); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
+  input[type=text], input[type=password], input[type=url], textarea{
+    width:100%; background:var(--asphalt); border:1px solid var(--line); color:var(--paper);
+    border-radius:7px; padding:11px 12px; font-family:'Manrope',sans-serif; font-size:14px;
+    outline:none; transition:border-color .25s var(--ease);
+  }
+  input[type=text]:focus, input[type=password]:focus, input[type=url]:focus, textarea:focus{ border-color:var(--red); }
+  textarea{ resize:vertical; min-height:60px; line-height:1.5; }
+  .btn{
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:14px; letter-spacing:.05em;
+    text-transform:uppercase; padding:12px 20px; border-radius:8px; border:1px solid var(--line);
+    background:transparent; color:var(--paper); cursor:pointer; transition:all .25s var(--ease);
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn:hover{ border-color:var(--red); color:var(--paper); }
+  .btn.primary{ background:var(--red); border-color:var(--red); }
+  .btn.primary:hover{ background:var(--red-deep); border-color:var(--red-deep); }
+  .btn.ghost{ color:var(--paper-dim); }
+  .btn.charge{ background:var(--charge); border-color:var(--charge); color:var(--ink); }
+  .btn.charge:hover{ filter:brightness(1.08); }
+  .btn.block{ width:100%; }
+  .btn.sm{ padding:8px 14px; font-size:12px; }
+  .err{ color:var(--red); font-size:13px; margin-top:10px; min-height:16px; }
+  .note{ font-size:12px; color:var(--grey); line-height:1.6; margin-top:18px; }
+
+  /* ---------- app shell ---------- */
+  .app{ display:none; }
+  .app.show{ display:block; }
+  header.admin{
+    position:sticky; top:0; z-index:20; background:rgba(13,13,14,0.92); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line); padding:16px 28px; display:flex; align-items:center;
+    justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .admin-brand{ display:flex; align-items:center; gap:10px; }
+  .admin-brand .dot{ width:9px; height:9px; border-radius:50%; background:var(--charge); box-shadow:0 0 8px 1px var(--charge); }
+  .admin-brand strong{ font-family:'Rajdhani',sans-serif; font-weight:700; font-size:16px; letter-spacing:.02em; }
+  .admin-brand span{ font-size:12px; color:var(--paper-dim); }
+  .admin-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .status{ font-size:12px; color:var(--grey); }
+  .status.saved{ color:var(--charge); }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:32px 28px 90px; }
+
+  .banner{
+    background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--charge);
+    border-radius:8px; padding:16px 18px; font-size:13px; color:var(--paper-dim); line-height:1.7; margin-bottom:28px;
+  }
+  .banner strong{ color:var(--paper); }
+
+  .tabs{ display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap; }
+  .tab{
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:13.5px; letter-spacing:.06em;
+    text-transform:uppercase; padding:11px 22px; border-radius:999px; border:1px solid var(--line);
+    background:transparent; color:var(--paper-dim); cursor:pointer; transition:all .25s var(--ease);
+  }
+  .tab:hover{ border-color:var(--red); color:var(--paper); }
+  .tab.active{ background:var(--red); border-color:var(--red); color:var(--paper); }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .grid-cards{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:16px; }
+
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px; display:flex; flex-direction:column; gap:12px;
+  }
+  .card .idx{ font-family:'Rajdhani',sans-serif; font-weight:700; color:var(--red); font-size:12px; letter-spacing:.08em; }
+
+  .thumb{
+    width:100%; aspect-ratio:4/3; border-radius:7px; overflow:hidden; position:relative;
+    background:linear-gradient(160deg, var(--asphalt-2), var(--ink)); border:1px dashed rgba(244,242,236,0.18);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .thumb .ph{ color:var(--grey); font-size:12px; text-align:center; padding:0 10px; }
+  .thumb-row{ display:flex; gap:8px; }
+  .thumb-row label.upload{
+    flex:1; text-align:center; font-size:12px; font-weight:600; color:var(--paper-dim);
+    border:1px solid var(--line); border-radius:7px; padding:9px; cursor:pointer; transition:border-color .2s;
+  }
+  .thumb-row label.upload:hover{ border-color:var(--red); }
+  .thumb-row input[type=file]{ display:none; }
+
+  .rowline{ display:flex; gap:8px; }
+  .rowline .field{ flex:1; margin-bottom:0; }
+
+  .phone-row{ display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+  .phone-row input{ flex:1; }
+  .icon-btn{
+    width:34px; height:34px; flex:none; display:flex; align-items:center; justify-content:center;
+    border-radius:7px; border:1px solid var(--line); background:transparent; color:var(--paper-dim); cursor:pointer;
+  }
+  .icon-btn:hover{ border-color:var(--red); color:var(--paper); }
+
+  footer.save-bar{
+    position:sticky; bottom:0; z-index:20; background:rgba(13,13,14,0.95); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line); padding:14px 28px; display:flex; align-items:center; justify-content:flex-end; gap:12px;
+  }
+
+  .toast{
+    position:fixed; bottom:80px; right:28px; background:var(--panel); border:1px solid var(--charge);
+    color:var(--paper); padding:12px 18px; border-radius:8px; font-size:13px; z-index:50;
+    transform:translateY(12px); opacity:0; pointer-events:none; transition:all .3s var(--ease);
+  }
+  .toast.show{ transform:translateY(0); opacity:1; }
+
+  @media (max-width:640px){
+    header.admin{ padding:14px 16px; } .wrap{ padding:24px 16px 90px; } footer.save-bar{ padding:12px 16px; flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN (Supabase Auth) ============ -->
+<div class="gate" id="loginGate" style="display:none;">
+  <div class="gate-box">
+    <div class="mark"><span class="dot"></span><span>Abbas Enterprises · Admin</span></div>
+    <h1>Admin sign in</h1>
+    <p class="sub">Sign in with the admin account to edit products, prices, images and branch details. Changes go live on the site the moment you hit Save.</p>
+    <div class="field"><label>Email</label><input type="text" id="loginEmail" autocomplete="username"></div>
+    <div class="field"><label>Password</label><input type="password" id="loginPass" autocomplete="current-password"></div>
+    <button class="btn primary block" id="loginBtn">Sign in</button>
+    <div class="err" id="loginErr"></div>
+    <p class="note">No account yet? Create the admin user once in your Supabase project's Authentication tab, then sign in here with that email &amp; password.</p>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="app" id="app">
+  <header class="admin">
+    <div class="admin-brand">
+      <span class="dot"></span>
+      <div>
+        <strong>Abbas Enterprises</strong><br>
+        <span>Admin Panel</span>
+      </div>
+    </div>
+    <div class="admin-actions">
+      <span class="status" id="statusText">No unsaved changes</span>
+      <a class="btn ghost sm" href="index.html" target="_blank" rel="noopener">View live site</a>
+      <button class="btn ghost sm" id="logoutBtn">Log out</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="banner">
+      <strong>How this works:</strong> this panel is connected live to your Supabase database. Click <strong>Save &amp; publish</strong> and the change appears on the live site within a couple seconds — no downloads, no GitHub, nothing else to do.
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-panel="ebikes">Electric Bikes</button>
+      <button class="tab" data-panel="rickshaws">Auto Rickshaws</button>
+      <button class="tab" data-panel="batteries">Batteries</button>
+      <button class="tab" data-panel="branches">Branches</button>
+    </div>
+
+    <div class="panel active" id="panel-ebikes"><div class="grid-cards" id="cards-ebikes"></div></div>
+    <div class="panel" id="panel-rickshaws"><div class="grid-cards" id="cards-rickshaws"></div></div>
+    <div class="panel" id="panel-batteries"><div class="grid-cards" id="cards-batteries"></div></div>
+    <div class="panel" id="panel-branches"><div class="grid-cards" id="cards-branches"></div></div>
+  </div>
+
+  <footer class="save-bar">
+    <button class="btn ghost sm" id="discardBtn">Discard changes</button>
+    <button class="btn charge sm" id="saveBtn">Save &amp; publish</button>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="application/json" id="site-data-fallback">{"products": {"ebikes": [{"id": "eb-01", "name": "Metro E-Glide 60V", "spec": "60V · 28Ah lithium · ~70km range · LED display", "price": "", "image": ""}, {"id": "eb-02", "name": "Metro Volt Pro", "spec": "72V · 32Ah lithium · dual disc brakes · alloy wheels", "price": "", "image": ""}, {"id": "eb-03", "name": "Metro Commuter X", "spec": "60V · 24Ah · lightweight frame · daily-city range", "price": "", "image": ""}, {"id": "eb-04", "name": "Metro Cruiser LX", "spec": "60V · 30Ah · wide seat · chrome-effect trim", "price": "", "image": ""}, {"id": "eb-05", "name": "Metro Sprint 72V", "spec": "72V · 35Ah · fastest acceleration in the lineup", "price": "", "image": ""}, {"id": "eb-06", "name": "Metro City Rider", "spec": "60V · 26Ah · low seat height · easy for new riders", "price": "", "image": ""}, {"id": "eb-07", "name": "Metro Delivery Max", "spec": "60V · 32Ah · reinforced rear rack · heavy-load rated", "price": "", "image": ""}, {"id": "eb-08", "name": "Metro Junior 48V", "spec": "48V · 20Ah · compact frame · lower top speed", "price": "", "image": ""}, {"id": "eb-09", "name": "Metro Dual-Battery Elite", "spec": "72V · 2× 30Ah swappable · longest range option", "price": "", "image": ""}, {"id": "eb-10", "name": "Metro Classic Retro", "spec": "60V · 28Ah · round headlamp · Silver / Black finish", "price": "", "image": ""}, {"id": "eb-11", "name": "Metro Explorer 60V", "spec": "60V · 30Ah lithium · long-distance touring build", "price": "", "image": ""}, {"id": "eb-12", "name": "Metro Street Edge", "spec": "48V · 22Ah · nimble frame for tight lanes", "price": "", "image": ""}, {"id": "eb-13", "name": "Metro Highway 72V", "spec": "72V · 38Ah · highest top speed in the range", "price": "", "image": ""}, {"id": "eb-14", "name": "Metro EcoRide", "spec": "48V · 18Ah · budget-friendly, lowest running cost", "price": "", "image": ""}, {"id": "eb-15", "name": "Metro Dual Suspension", "spec": "60V · 28Ah · front & rear suspension for rough roads", "price": "", "image": ""}, {"id": "eb-16", "name": "Metro Ladies Special", "spec": "48V · 22Ah · low step-through frame", "price": "", "image": ""}, {"id": "eb-17", "name": "Metro Cargo Hauler", "spec": "60V · 30Ah · reinforced rear rack, delivery-ready", "price": "", "image": ""}, {"id": "eb-18", "name": "Metro Sport 72V", "spec": "72V · 34Ah · performance tuning, sport styling", "price": "", "image": ""}, {"id": "eb-19", "name": "Metro Foldable Compact", "spec": "48V · 20Ah · folds for easy storage/transport", "price": "", "image": ""}, {"id": "eb-20", "name": "Metro Premium Elite", "spec": "72V · 35Ah · top trim, full LED display & alloy wheels", "price": "", "image": ""}], "rickshaws": [{"id": "rk-01", "name": "Sazgar Metro Passenger", "spec": "Standard 4-seater · electric drive · daily-fare use", "price": "", "image": ""}, {"id": "rk-02", "name": "Sazgar Metro Deluxe", "spec": "Upholstered seating · extra cushioning · canopy roof", "price": "", "image": ""}, {"id": "rk-03", "name": "Sazgar Metro Family 6-Seater", "spec": "Extended body · side-facing rear bench · school-run ready", "price": "", "image": ""}, {"id": "rk-04", "name": "Sazgar Metro Cargo King", "spec": "Open-bed loader · reinforced chassis · heavy freight", "price": "", "image": ""}, {"id": "rk-05", "name": "Sazgar Metro Mini Cargo", "spec": "Compact loader · tight-street maneuvering · shop deliveries", "price": "", "image": ""}, {"id": "rk-06", "name": "Sazgar Metro Rapid", "spec": "Higher-torque motor · quicker off-the-line pickup", "price": "", "image": ""}, {"id": "rk-07", "name": "Sazgar Metro Long Body", "spec": "Extended wheelbase · smoother ride on longer routes", "price": "", "image": ""}, {"id": "rk-08", "name": "Sazgar Metro Eco", "spec": "Entry-level trim · lower running cost · fare-friendly", "price": "", "image": ""}, {"id": "rk-09", "name": "Sazgar Metro Heavy Duty", "spec": "Reinforced axle · built for continuous cargo runs", "price": "", "image": ""}, {"id": "rk-10", "name": "Sazgar Metro City Special", "spec": "Balanced trim for both fare & family use · full canopy", "price": "", "image": ""}, {"id": "rk-11", "name": "Sazgar Metro VIP", "spec": "Premium interior · extra legroom · chrome trim", "price": "", "image": ""}, {"id": "rk-12", "name": "Sazgar Metro Loader Plus", "spec": "Extended cargo bed · heavy-duty suspension", "price": "", "image": ""}, {"id": "rk-13", "name": "Sazgar Metro School Special", "spec": "6-seater · safety rails · school-run trim", "price": "", "image": ""}, {"id": "rk-14", "name": "Sazgar Metro Vendor Cart", "spec": "Custom cargo fit-out · street-vendor ready", "price": "", "image": ""}, {"id": "rk-15", "name": "Sazgar Metro Tourist", "spec": "Extra-wide canopy · sightseeing trim", "price": "", "image": ""}, {"id": "rk-16", "name": "Sazgar Metro Compact", "spec": "Shorter wheelbase · easier tight-street handling", "price": "", "image": ""}, {"id": "rk-17", "name": "Sazgar Metro Night Rider", "spec": "Extra lighting kit · reflective trim", "price": "", "image": ""}, {"id": "rk-18", "name": "Sazgar Metro Value", "spec": "Entry trim · lowest price point in range", "price": "", "image": ""}, {"id": "rk-19", "name": "Sazgar Metro Long Haul", "spec": "Reinforced chassis · built for extended routes", "price": "", "image": ""}, {"id": "rk-20", "name": "Sazgar Metro Flagship", "spec": "Top trim · full upholstery & premium finish", "price": "", "image": ""}], "batteries": [{"id": "bt-01", "name": "Osaka 60V 30Ah", "spec": "Lithium · standard fit for most Metro bike models", "price": "", "image": ""}, {"id": "bt-02", "name": "Osaka 72V 32Ah", "spec": "Lithium · higher capacity for longer daily routes", "price": "", "image": ""}, {"id": "bt-03", "name": "Osaka 48V 20Ah Lite", "spec": "Lightweight pack · fits Metro Junior & compact models", "price": "", "image": ""}, {"id": "bt-04", "name": "Alaska 60V 28Ah", "spec": "Lithium · balanced range and charge-cycle life", "price": "", "image": ""}, {"id": "bt-05", "name": "Alaska 72V 30Ah", "spec": "Lithium · higher-voltage pack for Metro Volt Pro & Sprint", "price": "", "image": ""}, {"id": "bt-06", "name": "Alaska 72V 32Ah Fast-Charge", "spec": "Lithium · shorter charge time, ideal for delivery riders", "price": "", "image": ""}, {"id": "bt-07", "name": "Sage 60V 26Ah", "spec": "Lithium · everyday commuter capacity", "price": "", "image": ""}, {"id": "bt-08", "name": "Sage 48V 20Ah", "spec": "Lithium · entry-level pack for smaller-frame bikes", "price": "", "image": ""}, {"id": "bt-09", "name": "Phoenix 60V 30Ah", "spec": "Lithium · reliable mid-range replacement pack", "price": "", "image": ""}, {"id": "bt-10", "name": "Phoenix 72V 35Ah", "spec": "Lithium · top-capacity pack, longest range in stock", "price": "", "image": ""}, {"id": "bt-11", "name": "Osaka 48V 22Ah", "spec": "Lithium · fits ladies & compact frame bikes", "price": "", "image": ""}, {"id": "bt-12", "name": "Osaka 72V 34Ah", "spec": "Lithium · high-capacity pack for Sprint & Volt Pro", "price": "", "image": ""}, {"id": "bt-13", "name": "Alaska 48V 18Ah", "spec": "Lithium · lightweight, budget-friendly pack", "price": "", "image": ""}, {"id": "bt-14", "name": "Alaska 60V 30Ah", "spec": "Lithium · balanced range for daily commuting", "price": "", "image": ""}, {"id": "bt-15", "name": "Sage 72V 32Ah", "spec": "Lithium · higher-voltage option for touring models", "price": "", "image": ""}, {"id": "bt-16", "name": "Sage 60V 28Ah", "spec": "Lithium · mid-range replacement pack", "price": "", "image": ""}, {"id": "bt-17", "name": "Phoenix 48V 20Ah", "spec": "Lithium · entry-level pack for compact bikes", "price": "", "image": ""}, {"id": "bt-18", "name": "Phoenix 60V 32Ah", "spec": "Lithium · extended range for daily use", "price": "", "image": ""}, {"id": "bt-19", "name": "Phoenix 72V 30Ah Fast-Charge", "spec": "Lithium · quick charge for delivery riders", "price": "", "image": ""}, {"id": "bt-20", "name": "Osaka 72V 35Ah Long Range", "spec": "Lithium · top-capacity pack, longest range", "price": "", "image": ""}]}, "branches": [{"id": "branch-1", "tag": "Main Branch", "name": "Abbas Enterprises", "sub": "Sazgar Metro Auto Rickshaw · Electric Bikes (SS Dealer)", "addr": "Matta Road, Khwazakhela, Swat", "phones": [{"tel": "+926467744222", "display": "0946-744222"}, {"tel": "+923479489222", "display": "0347-9489222"}], "batteries": ["Osaka", "Alaska", "Sage", "Phoenix"], "image": ""}, {"id": "branch-2", "tag": "2nd Branch", "name": "Metro Electric Bikes", "sub": "SS Dealer", "addr": "GT Road, Rahim Abad, Mingora, Swat", "phones": [{"tel": "+923478575522", "display": "0347-8575522"}], "batteries": ["Osaka", "Alaska", "Sage", "Phoenix"], "image": ""}, {"id": "branch-3", "tag": "3rd Branch", "name": "Metro Electric Bikes", "sub": "", "addr": "Near Baryam Bridge, Matta, Swat", "phones": [{"tel": "+923173705522", "display": "0317-3705522"}], "batteries": ["Osaka", "Saga", "Alaska", "Phoenix"], "image": ""}, {"id": "branch-4", "tag": "4th Branch", "name": "Metro Electric Bikes", "sub": "", "addr": "Watkai, Mingora, Swat", "phones": [{"tel": "+923709191195", "display": "0370-9191195"}], "batteries": ["Osaka", "Saga", "Alaska", "Phoenix"], "image": ""}]}</script>
+<script>
+  // ---------------- Supabase config ----------------
+  // Fill these in from your Supabase project: Settings → API.
+  const SUPABASE_URL = 'https://wedwcfnodfthwaazlnnl.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_PEC6CP6OccoFwV70q4WqXg_uOkvEzFE';
+  const IMAGE_BUCKET = 'site-images';
+  let supa = null;
+  let supaConfigError = '';
+  try{
+    if(!SUPABASE_URL.startsWith('http')) throw new Error('not configured');
+    supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }catch(e){
+    supaConfigError = 'Supabase isn\'t set up correctly — check SUPABASE_URL and SUPABASE_ANON_KEY near the top of the script in admin.html.';
+  }
+
+  const PRODUCT_GROUPS = [['ebikes','cards-ebikes'], ['rickshaws','cards-rickshaws'], ['batteries','cards-batteries']];
+
+  let data = null;      // working copy currently being edited
+  let baseline = null;  // last saved/loaded copy, to detect unsaved changes
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast._tm);
+    showToast._tm = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // ---------------- auth flow (Supabase Auth) ----------------
+  async function initAuth(){
+    document.getElementById('loginGate').style.display = 'flex';
+    if(!supa){
+      document.getElementById('loginErr').textContent = supaConfigError || 'Supabase isn\'t configured yet — see the setup notes.';
+      return;
+    }
+    try{
+      const { data: sessionData } = await supa.auth.getSession();
+      if(sessionData && sessionData.session){
+        document.getElementById('loginGate').style.display = 'none';
+        startApp();
+      }
+    }catch(e){
+      document.getElementById('loginErr').textContent = 'Could not reach Supabase: ' + e.message;
+    }
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', attemptLogin);
+  document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key === 'Enter') attemptLogin(); });
+  document.getElementById('loginEmail').addEventListener('keydown', e => { if(e.key === 'Enter') attemptLogin(); });
+  async function attemptLogin(){
+    const err = document.getElementById('loginErr');
+    if(!supa){
+      err.textContent = supaConfigError || 'Supabase isn\'t configured yet.';
+      return;
+    }
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPass').value;
+    err.textContent = '';
+    try{
+      const { error } = await supa.auth.signInWithPassword({ email, password });
+      if(error){ err.textContent = error.message || 'Sign in failed.'; return; }
+      document.getElementById('loginGate').style.display = 'none';
+      startApp();
+    }catch(e){
+      err.textContent = 'Could not reach Supabase: ' + e.message;
+    }
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    if(supa) await supa.auth.signOut();
+    document.getElementById('app').classList.remove('show');
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginGate').style.display = 'flex';
+  });
+
+  // ---------------- app start / data load ----------------
+  function startApp(){
+    document.getElementById('app').classList.add('show');
+    loadData();
+  }
+
+  function readEmbeddedFallback(){
+    const el = document.getElementById('site-data-fallback');
+    if(!el) return null;
+    try{ return JSON.parse(el.textContent); }catch(e){ return null; }
+  }
+
+  async function loadData(){
+    let row = null, error = null;
+    try{
+      ({ data: row, error } = await supa.from('site_data').select('content').eq('id', 1).single());
+    }catch(e){ error = e; }
+    if(!error && row && row.content){
+      data = row.content;
+      baseline = JSON.parse(JSON.stringify(row.content));
+      renderAll();
+      setStatus(false);
+      return;
+    }
+    const fallback = readEmbeddedFallback();
+    if(fallback){
+      data = fallback;
+      baseline = JSON.parse(JSON.stringify(fallback));
+      renderAll();
+      setStatus(false);
+      showToast('Could not reach Supabase — showing starting data instead.');
+    } else {
+      showToast('Could not load any product data.');
+    }
+  }
+
+  // ---------------- tabs ----------------
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  // ---------------- rendering ----------------
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // Uploads a picked file to Supabase Storage and returns its public URL.
+  async function uploadImage(file){
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const { error } = await supa.storage.from(IMAGE_BUCKET).upload(path, file, { upsert:false });
+    if(error){ showToast('Image upload failed: ' + error.message); return null; }
+    const { data: pub } = supa.storage.from(IMAGE_BUCKET).getPublicUrl(path);
+    return pub.publicUrl;
+  }
+
+  function renderAll(){
+    PRODUCT_GROUPS.forEach(([key, containerId]) => renderProductCards(key, containerId));
+    renderBranchCards();
+  }
+
+  function renderProductCards(groupKey, containerId){
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    data.products[groupKey].forEach((item, idx) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <span class="idx">${String(idx+1).padStart(2,'0')}</span>
+        <div class="thumb" data-thumb>${item.image ? `<img src="${esc(item.image)}">` : `<span class="ph">No image yet</span>`}</div>
+        <div class="thumb-row">
+          <label class="upload">Upload image<input type="file" accept="image/*" data-role="file"></label>
+          <button type="button" class="icon-btn" data-role="clear-img" title="Remove image">✕</button>
+        </div>
+        <div class="field"><label>Or paste image URL</label><input type="url" data-role="imgurl" placeholder="https://..." value="${esc(item.image && item.image.startsWith('http') ? item.image : '')}"></div>
+        <div class="field"><label>Name</label><input type="text" data-role="name" value="${esc(item.name)}"></div>
+        <div class="field"><label>Price</label><input type="text" data-role="price" placeholder="e.g. Rs 285,000" value="${esc(item.price)}"></div>
+        <div class="field"><label>Details</label><textarea data-role="spec">${esc(item.spec)}</textarea></div>
+      `;
+      const thumb = card.querySelector('[data-thumb]');
+      const fileInput = card.querySelector('[data-role=file]');
+      const urlInput = card.querySelector('[data-role=imgurl]');
+      const clearBtn = card.querySelector('[data-role=clear-img]');
+      const nameInput = card.querySelector('[data-role=name]');
+      const priceInput = card.querySelector('[data-role=price]');
+      const specInput = card.querySelector('[data-role=spec]');
+
+      function setImage(src){
+        item.image = src || '';
+        thumb.innerHTML = src ? `<img src="${esc(src)}">` : `<span class="ph">No image yet</span>`;
+        markDirty();
+      }
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if(!file) return;
+        thumb.innerHTML = `<span class="ph">Uploading…</span>`;
+        const url = await uploadImage(file);
+        if(url){ setImage(url); urlInput.value=''; }
+        else { fileInput.value=''; thumb.innerHTML = item.image ? `<img src="${esc(item.image)}">` : `<span class="ph">No image yet</span>`; }
+      });
+      urlInput.addEventListener('input', () => setImage(urlInput.value.trim()));
+      clearBtn.addEventListener('click', () => { setImage(''); fileInput.value=''; urlInput.value=''; });
+      nameInput.addEventListener('input', () => { item.name = nameInput.value; markDirty(); });
+      priceInput.addEventListener('input', () => { item.price = priceInput.value; markDirty(); });
+      specInput.addEventListener('input', () => { item.spec = specInput.value; markDirty(); });
+
+      container.appendChild(card);
+    });
+  }
+
+  function renderBranchCards(){
+    const container = document.getElementById('cards-branches');
+    container.innerHTML = '';
+    data.branches.forEach((b) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <span class="idx">${esc(b.tag)}</span>
+        <div class="thumb" data-thumb>${b.image ? `<img src="${esc(b.image)}">` : `<span class="ph">No photo yet</span>`}</div>
+        <div class="thumb-row">
+          <label class="upload">Upload photo<input type="file" accept="image/*" data-role="file"></label>
+          <button type="button" class="icon-btn" data-role="clear-img" title="Remove image">✕</button>
+        </div>
+        <div class="field"><label>Or paste image URL</label><input type="url" data-role="imgurl" placeholder="https://..." value="${esc(b.image && b.image.startsWith('http') ? b.image : '')}"></div>
+        <div class="rowline">
+          <div class="field"><label>Branch tag</label><input type="text" data-role="tag" value="${esc(b.tag)}"></div>
+        </div>
+        <div class="field"><label>Name</label><input type="text" data-role="name" value="${esc(b.name)}"></div>
+        <div class="field"><label>Subtitle (optional)</label><input type="text" data-role="sub" value="${esc(b.sub || '')}"></div>
+        <div class="field"><label>Address</label><input type="text" data-role="addr" value="${esc(b.addr)}"></div>
+        <div class="field"><label>Phone numbers</label><div data-role="phones"></div>
+          <button type="button" class="btn ghost sm" data-role="add-phone">+ Add phone</button>
+        </div>
+        <div class="field"><label>Battery brands sold (comma separated)</label><input type="text" data-role="batteries" value="${esc((b.batteries||[]).join(', '))}"></div>
+      `;
+      const thumb = card.querySelector('[data-thumb]');
+      const fileInput = card.querySelector('[data-role=file]');
+      const urlInput = card.querySelector('[data-role=imgurl]');
+      const clearBtn = card.querySelector('[data-role=clear-img]');
+
+      function setImage(src){
+        b.image = src || '';
+        thumb.innerHTML = src ? `<img src="${esc(src)}">` : `<span class="ph">No photo yet</span>`;
+        markDirty();
+      }
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if(!file) return;
+        thumb.innerHTML = `<span class="ph">Uploading…</span>`;
+        const url = await uploadImage(file);
+        if(url){ setImage(url); urlInput.value=''; }
+        else { fileInput.value=''; thumb.innerHTML = b.image ? `<img src="${esc(b.image)}">` : `<span class="ph">No photo yet</span>`; }
+      });
+      urlInput.addEventListener('input', () => setImage(urlInput.value.trim()));
+      clearBtn.addEventListener('click', () => { setImage(''); fileInput.value=''; urlInput.value=''; });
+
+      card.querySelector('[data-role=tag]').addEventListener('input', e => { b.tag = e.target.value; markDirty(); });
+      card.querySelector('[data-role=name]').addEventListener('input', e => { b.name = e.target.value; markDirty(); });
+      card.querySelector('[data-role=sub]').addEventListener('input', e => { b.sub = e.target.value; markDirty(); });
+      card.querySelector('[data-role=addr]').addEventListener('input', e => { b.addr = e.target.value; markDirty(); });
+      card.querySelector('[data-role=batteries]').addEventListener('input', e => {
+        b.batteries = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+        markDirty();
+      });
+
+      const phonesWrap = card.querySelector('[data-role=phones]');
+      function renderPhones(){
+        phonesWrap.innerHTML = '';
+        (b.phones || []).forEach((ph, i) => {
+          const row = document.createElement('div');
+          row.className = 'phone-row';
+          row.innerHTML = `
+            <input type="text" placeholder="Display, e.g. 0347-9489222" value="${esc(ph.display)}" data-i="${i}" data-f="display">
+            <input type="text" placeholder="Dial number, e.g. +923479489222" value="${esc(ph.tel)}" data-i="${i}" data-f="tel">
+            <button type="button" class="icon-btn" data-role="del-phone" data-i="${i}">✕</button>
+          `;
+          phonesWrap.appendChild(row);
+        });
+        phonesWrap.querySelectorAll('input').forEach(inp => {
+          inp.addEventListener('input', () => {
+            const i = +inp.dataset.i, f = inp.dataset.f;
+            b.phones[i][f] = inp.value;
+            markDirty();
+          });
+        });
+        phonesWrap.querySelectorAll('[data-role=del-phone]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            b.phones.splice(+btn.dataset.i, 1);
+            renderPhones();
+            markDirty();
+          });
+        });
+      }
+      renderPhones();
+      card.querySelector('[data-role=add-phone]').addEventListener('click', () => {
+        b.phones = b.phones || [];
+        b.phones.push({ display: '', tel: '' });
+        renderPhones();
+        markDirty();
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  // ---------------- dirty state / save / discard / download ----------------
+  function isDirty(){ return JSON.stringify(data) !== JSON.stringify(baseline); }
+  function setStatus(dirty){
+    const el = document.getElementById('statusText');
+    if(dirty){ el.textContent = 'Unsaved changes'; el.classList.remove('saved'); }
+    else { el.textContent = 'No unsaved changes'; el.classList.add('saved'); }
+  }
+  function markDirty(){ setStatus(true); }
+
+  document.getElementById('saveBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    const prevLabel = btn.innerHTML;
+    btn.innerHTML = 'Publishing…';
+    const { error } = await supa.from('site_data').update({ content: data }).eq('id', 1);
+    btn.disabled = false;
+    btn.innerHTML = prevLabel;
+    if(error){
+      showToast('Save failed: ' + error.message);
+      return;
+    }
+    baseline = JSON.parse(JSON.stringify(data));
+    setStatus(false);
+    showToast('Published — live on the site now.');
+  });
+
+  document.getElementById('discardBtn').addEventListener('click', () => {
+    if(!isDirty()){ showToast('Nothing to discard.'); return; }
+    if(confirm('Discard all unsaved edits and go back to the last saved version?')){
+      data = JSON.parse(JSON.stringify(baseline));
+      renderAll();
+      setStatus(false);
+    }
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if(document.getElementById('app').classList.contains('show') && isDirty()){
+      e.preventDefault(); e.returnValue = '';
+    }
+  });
+
+  initAuth();
+</script>
+
+</body>
+</html>
